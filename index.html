@@ -3,7 +3,7 @@
 <style>
   body {
     margin: 50px;
-    font: 14px/20px sans-serif;
+    font: 14px/20px monospace;
     cursor: default;
   }
 
@@ -183,6 +183,7 @@ const {Float16Array} = float16;
     var hexLength = bytes.length;
 
     function reduceNumber(x) {
+      return x
       var copy = bytes.length === 2 ? new Float16Array(1) : bytes.length === 4 ? new Float32Array(1) : new Float64Array(1);
       copy[0] = +x;
       var value = copy[0];
@@ -242,11 +243,19 @@ const {Float16Array} = float16;
     html += '<tr>';
     for (var i = 0; i < bytes.length; i++) {
       for (var j = 0; j < 8; j++) {
-        var index = (bytes.length - i) * 8 - j;
-        if (j > 3) {
-          html += '<td class="nibble">' + index + '</td>'
+        var index = (bytes.length - i) * 8 - j - 1;
+        if (i%2) {
+          if (index < 10) {
+            html += '<td class="nibble">' + '\xa0' + index + '</td>'
+          } else {
+            html += '<td class="nibble">' + index + '</td>'
+          }
         } else {
-          html += '<td class="dark nibble">' + index + '</td>'
+          if (index < 10) {
+            html += '<td class="dark nibble">' + '\xa0' + index + '</td>'
+          } else {
+            html += '<td class="dark nibble">' + index + '</td>'
+          }
         }
       }
     }
@@ -422,7 +431,8 @@ const {Float16Array} = float16;
         '&nbsp;&nbsp;&times;&nbsp;&nbsp;' +
         '<span class="exponent">2<sup>' + exponent + '</sup></span>' +
         '&nbsp;&nbsp;&times;&nbsp;&nbsp;' +
-        '<span class="fraction">' + reduceNumber(fraction) + '</span>';
+        '<span class="fraction">' + fraction.toFixed(16) + '</span>';
+        //'<span class="fraction">' + reduceNumber(fraction) + '</span>';
     }
 
     function toHexString(byteArray) {
@@ -445,9 +455,11 @@ const {Float16Array} = float16;
     render();
   }
 
-  load(new Float16Array([Math.PI]), 5, document.getElementById('input16'), document.getElementById('output16'), document.getElementById('help16'), document.getElementById('hex16'));
-  load(new Float32Array([Math.PI]), 8, document.getElementById('input32'), document.getElementById('output32'), document.getElementById('help32'), document.getElementById('hex32'));
-  load(new Float64Array([Math.PI]), 11, document.getElementById('input64'), document.getElementById('output64'), document.getElementById('help64'), document.getElementById('hex64'));
+  sample_val = Math.PI
+
+  load(new Float16Array([sample_val]),  5, document.getElementById('input16'), document.getElementById('output16'), document.getElementById('help16'), document.getElementById('hex16'));
+  load(new Float32Array([sample_val]),  8, document.getElementById('input32'), document.getElementById('output32'), document.getElementById('help32'), document.getElementById('hex32'));
+  load(new Float64Array([sample_val]), 11, document.getElementById('input64'), document.getElementById('output64'), document.getElementById('help64'), document.getElementById('hex64'));
 
 })();
 
